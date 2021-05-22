@@ -1,7 +1,69 @@
 <template>
   <div class="container">
-    <b-button @click="connectToMeta" :disabled="connected">Conectar</b-button>
+    <!-- Inicia sidebar con detalles de res -->
+    <b-sidebar
+      type="is-light"
+      fullheight="fullheight"
+      overlay="overlay"
+      right="right"
+      v-model="open"
+    >
+    <div class="p-1">
+      <div class="column">
+        <b-field id="nTitle" label="Propiedades de red" />
+        <div class="level-left">
+          <b-field :label="`Network Id: ${networkId}`" />
+        </div>
+        <div class="level-left">
+          <b-field :label="`Peer Count: ${peerCount}`" />
+        </div>
+        <div class="level-left">
+          <b-field :label="`Block number: ${blockNumber}`" />
+        </div>
+        <div class="level-left">
+          <b-field
+            :label="`Block Transaction count: ${blockTransactionCount}`"
+          />
+        </div>
+        <div class="level-left">
+          <b-field :label="`Accounts cont: ${accountsAmount}`" />
+        </div>
+        <div class="level-left">
+          <b-field :label="`Protocol version: ${protocolVersion}`" />
+        </div>
+        <div class="level-left">
+          <b-field :label="`Gas price: ${gasPrice}`" />
+        </div>
+      </div>
+    </div>
+    </b-sidebar>
+    <!-- Finaliza sidebar con detalles de res -->
+    <!-- Inicia Menu principal -->
+    <b-navbar centered>
+      <template #brand>
+        <b-navbar-item>
+          <b-button style="width:140px" @click="connectToMeta" :disabled="connected">Conectar</b-button>
+        </b-navbar-item>
+      </template>
+      <template #start>
+        <b-field id="nTitle" label="Bienvenido" />
+      </template>
+      <template #end>
+        <b-navbar-item >
+          <b-button  style="width:140px" @click="open = true">Detalles</b-button>
+        </b-navbar-item>
+      </template>
+    </b-navbar>
+    <!-- Finaliza Menu principal -->
+    <br>
+    <br>
+    <!-- Inicia cuerpo de contrato -->
     <div class="columns">
+      <!-- Inicia columna izquierda vacia -->
+      <div class="column">
+      </div>
+      <!-- Finaliza columna izquierda vacia -->
+      <!-- Inicia columna central-->
       <div class="column" style="border-color:black">
         <div class="columns">
           <div class="column">
@@ -10,38 +72,39 @@
               aria-role="list"
               @change="getAccountsBalance"
             >
-              <template #trigger="{ active }">
-                <b-button
-                  label="Seleccionar una billetera"
-                  type="is-primary"
-                  :icon-right="active ? 'menu-up' : 'menu-down'"
-                />
-              </template>
-              <b-dropdown-item
-                v-for="a in accounts"
-                :key="a"
-                :value="a"
-                aria-role="listitem"
-                >{{ a }}</b-dropdown-item
-              >
+            <template #trigger="{ active }">
+            <b-button
+              style="width:500px"
+              label="Seleccionar una billetera de origen"
+              type="is-primary"
+              :icon-right="active ? 'menu-up' : 'menu-down'"
+            />
+            </template>
+            <b-dropdown-item
+              v-for="a in accounts"
+              :key="a"
+              :value="a"
+              aria-role="listitem"
+            >
+            {{ a }}
+            </b-dropdown-item>
             </b-dropdown>
           </div>
-          <div class="column" style="margin-top:10px">
-            <b-field label="Billetera origen"> </b-field>
-          </div>
         </div>
-        <b-input :value="accountSender"> </b-input>
+        <b-input placeholder="Billetera de origen" :value="accountSender"> </b-input>
+        <br>
         <div class="columns">
-          <div class="column">
-            <b-dropdown v-model="accountReceiver" aria-role="list">
+          <div class="column" >
+            <b-dropdown  v-model="accountReceiver" aria-role="list">
               <template #trigger="{ active }">
                 <b-button
-                  label="Seleccionar una billetera"
+                  style="width:500px"
+                  label="Seleccionar una billetera de destino"
                   type="is-primary"
                   :icon-right="active ? 'menu-up' : 'menu-down'"
                 />
               </template>
-              <b-dropdown-item
+              <b-dropdown-item 
                 v-for="a in accounts"
                 :key="a"
                 :value="a"
@@ -50,11 +113,8 @@
               >
             </b-dropdown>
           </div>
-          <div class="column" style="margin-top:10px">
-            <b-field label="Billetera destino"> </b-field>
-          </div>
         </div>
-        <b-input :value="accountReceiver"> </b-input>
+        <b-input placeholder="Billetera de destino" :value="accountReceiver"> </b-input>
         <b-field label="Cantidad">
           <b-numberinput
             v-model="transactionValue"
@@ -78,33 +138,19 @@
         />
       </div>
       <div class="column">
-        <div class="level-right">
-          <b-field :label="`Network Id: ${networkId}`" />
-        </div>
-        <div class="level-right">
-          <b-field :label="`Peer Count: ${peerCount}`" />
-        </div>
-        <div class="level-right">
-          <b-field :label="`Block number: ${blockNumber}`" />
-        </div>
-        <div class="level-right">
-          <b-field
-            :label="`Block Transaction count: ${blockTransactionCount}`"
-          />
-        </div>
-        <div class="level-right">
-          <b-field :label="`Accounts cont: ${accountsAmount}`" />
-        </div>
-        <div class="level-right">
-          <b-field :label="`Protocol version: ${protocolVersion}`" />
-        </div>
-        <div class="level-right">
-          <b-field :label="`Gas price: ${gasPrice}`" />
-        </div>
       </div>
     </div>
   </div>
 </template>
+<style lang="scss">
+#nTitle{
+  text-align: center;
+    label {
+    font-weight: bold;
+    font-size: 30px;
+    color: #42b983;}
+}
+</style>
 
 <script>
 export default {
@@ -112,6 +158,7 @@ export default {
   components: {},
   data() {
     return {
+      open: false,
       isLoading: false,
       accounts: [],
       accountSender: "",
