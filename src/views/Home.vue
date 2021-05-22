@@ -56,6 +56,10 @@
               label="Enviar"
               type="is-primary"
               @click="fetchTransaction" />
+        <b-button
+              label="Activar"
+              type="is-primary"
+              @click="getAccountMeta" />
         </div>
       <div class="column">
         <div class="level-right"><b-field :label="`Network Id: ${networkId}` "/></div>
@@ -69,7 +73,6 @@
     </div>
   </div>
 </template>
-
 <script>
 export default {
   name: "Home",
@@ -87,6 +90,7 @@ export default {
       peerCount: 0, 
       blockNumber:0,
       blockTransactionCount:0,
+      accountsAmountReq: 0 ,
       accountsAmount: 0 ,
       protocolVersion: 0,
       gasPrice: 0,
@@ -95,6 +99,7 @@ export default {
   },
   mounted() {
     this.fetchAccounts()
+    this.fetchAccountsget()
     this.fetchGasPrice()
     this.fetchProtocolVersion()
     this.fetchBlockTransactionCount()
@@ -132,7 +137,13 @@ export default {
     }, 
     ///////////
     async fetchAccounts() {
+      this.accountsReq = await this.$store.state.web3.eth.requestAccounts()
+      // this.accounts = await this.$store.state.web3.eth.getAccounts()
+      this.accountsAmountReq = this.accountsReq.length
+    }, 
+    async fetchAccountsget() {
       this.accounts = await this.$store.state.web3.eth.getAccounts()
+      console.log("axelander: ",this.accounts)
       this.accountsAmount = this.accounts.length
     }, 
     async fetchBalance(address){
