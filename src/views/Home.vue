@@ -253,6 +253,38 @@ export default {
         }
       });
     },
+    testPrintName() {
+      this.$store.state.contract.methods
+        .name()
+        .call()
+        .then((result) => {
+          this.$buefy.toast.open(result);
+        });
+    },
+    testMethod() {
+      this.$store.state.contract.methods
+        .totalSupply()
+        .call()
+        .then((result) => {
+          this.$buefy.toast.open(result);
+        });
+    },
+    testBalance() {
+      this.$store.state.contract.methods
+        .balanceOf(this.accounts[0])
+        .call()
+        .then((result) => {
+          this.$buefy.toast.open(`Balance: ${result}`);
+        });
+    },
+    testSend() {
+      this.$store.state.contract.methods
+        .transfer("0x8Cd636bD81847576Aa4d99d8a0fAf34145eDdc09", 69)
+        .send({ from: this.accounts[0] })
+        .then((result) => {
+          console.log(result);
+        });
+    },
   },
 };
 </script>
