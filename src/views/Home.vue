@@ -253,7 +253,7 @@ export default {
         }
       });
     },
-    testPrintName() {
+    testName() {
       this.$store.state.contract.methods
         .name()
         .call()
@@ -261,7 +261,23 @@ export default {
           this.$buefy.toast.open(result);
         });
     },
-    testMethod() {
+    testSymbol() {
+      this.$store.state.contract.methods
+        .symbol()
+        .call()
+        .then((result) => {
+          this.$buefy.toast.open(result);
+        });
+    },
+    testDecimals() {
+      this.$store.state.contract.methods
+        .decimals()
+        .call()
+        .then((result) => {
+          this.$buefy.toast.open(result);
+        });
+    },
+    testTotalSupply() {
       this.$store.state.contract.methods
         .totalSupply()
         .call()
@@ -277,10 +293,35 @@ export default {
           this.$buefy.toast.open(`Balance: ${result}`);
         });
     },
-    testSend() {
+    testTransfer(to, amount) {
       this.$store.state.contract.methods
-        .transfer("0x8Cd636bD81847576Aa4d99d8a0fAf34145eDdc09", 69)
+        .transfer(to, amount)
         .send({ from: this.accounts[0] })
+        .then((result) => {
+          console.log(result);
+        });
+    },
+    //Cheque if this should be changed
+    testTransferFrom( to, amount) {
+      this.$store.state.contract.methods
+        .transferFrom( this.accounts[0], to, amount)
+        .send()
+        .then((result) => {
+          console.log(result);
+        });
+    },
+    testApprove( spender, amount) {
+      this.$store.state.contract.methods
+        .aprove( spender, amount)
+        .send({ from: this.accounts[0] })
+        .then((result) => {
+          console.log(result);
+        });
+    },
+    testAllowance( owner, spender) {
+      this.$store.state.contract.methods
+        .allowance( owner, spender)
+        .send()
         .then((result) => {
           console.log(result);
         });
