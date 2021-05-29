@@ -6,8 +6,35 @@ contract Token {
     string tokenSymbol;
     uint8 tokenDecimals;
     uint256 tokenTotalSupply;
-    mapping (address => uint256) private balances;
+    
+    struct Transactions {
+        address sender;
+        address receiver;
+        uint256 tokenAmount;
+    }
+    
+    Transactions[] transactions;
+    
+    mapping (address => uint256) private walletToPos;
+    mapping (address => bool) private isRegistered;
+    mapping (uint256 => address) private posToWallet;
+    uint256[] private balances;
+
     mapping (address => mapping(address => uint256)) private allowances;
+    
+    uint private lastId;
+    
+    function getLastId() private returns (uint) {
+        return lastId++;
+    }
+    
+    // modifiers
+
+    // modifier to check if caller has funds
+    modifier hasFunds(uint256 amount) {
+        require( balances[walletToPos[msg.sender]] >= amount, "Caller has no founds");
+        _;
+    }
     
     // events
     event Transfer(address indexed _from, address indexed _to, uint256 _value);
@@ -22,7 +49,11 @@ contract Token {
         tokenDecimals = 8;
         tokenTotalSupply = 69 * 1000000;
         // initial balance of the owner
-        balances[owner] = tokenTotalSupply;
+        posToWallet[0] = owner;
+        walletToPos[owner] = 0;
+        balances[walletToPos[owner]] = tokenTotalSupply;
+        isRegistered[owner] = true;
+        lastId = 0;
     }
     
     function name() public view returns (string memory) {
@@ -40,46 +71,85 @@ contract Token {
     function totalSupply() public view returns (uint256) {
         return tokenTotalSupply;   
     }
-    
+
     function balanceOf(address _owner) public view returns (uint256 balance) {
-        return balances[_owner];
+        return balances[walletToPos[_owner]];
     }
     
-    function transfer(address _to, uint256 _value) public returns (bool success) {
-        if (balances[msg.sender] < _value)
-            return false;
+    function transfer(address _to, uint256 _value) public hasFunds(_value)  returns (bool success) {
+ 
+        if (!isRegistered[_to]){
+            uint256 id = getLastId();
+            posToWallet[id] = _to;
+            walletToPos[_to] = id;
+            isRegistered[_to] = true;
+        }
         
-        balances[msg.sender] -= _value;
-        balances[_to] += _value;
+        balances[walletToPos[msg.sender]] -= _value;
+        balances[walletToPos[_to]] += _value;
         emit Transfer(msg.sender, _to, _value);
         
-        return true;
-    }
-    
-    function transferFrom(address _from, address _to, uint256 _value) public returns (bool success) {
-        if (allowances[_from][msg.sender] < _value)
-            return false;
-        if (balances[_from] < _value)
-            return false;
-        
-        balances[_from] -= _value;
-        allowances[_from][msg.sender] -= _value;
-        balances[_to] += _value;
+        Transactions memory transferValue = Transactions(msg.sender, _to, _value);
+        transactions.push(transferValue);
         
         return true;
     }
     
-    function approve(address _spender, uint256 _value) public returns (bool success) {
-        if (balances[msg.sender] < _value)
-            return false;
+    function lastTransfers() public view returns (address[] memory, address[] memory, uint256[] memory) {
         
-        allowances[msg.sender][_spender] += _value;
-        emit Approval(msg.sender, _spender, _value);
+        address[] memory senders = new address[](10);
+        address[] memory receivers = new address[](10);
+        uint256[] memory amounts = new uint256[](10);
         
-        return true;
+        uint256 limit;
+        
+        if (transactions.length < 10) {
+            limit = transactions.length;
+        } else {
+            limit = 10;
+        }
+        
+        for (uint256 i = 0; i < limit; i++){
+                
+            Transactions memory tempTransaction = transactions[transactions.length - 1 - i];
+                
+            senders[i] = tempTransaction.sender;
+            receivers [i] = tempTransaction.sender;
+            amounts[i] = tempTransaction.tokenAmount;
+                
+                
+        }
+        return (senders, receivers, amounts);   
     }
     
-    function allowance(address _owner, address _spender) public view returns (uint256 remaining) {
-        return allowances[_owner][_spender];
+    function topTen() public view returns (address[] memory, uint256[] memory) {
+        
+        address[] memory owners = new address[](10);
+        uint256[] memory amounts = new uint256[](10);
+        
+        uint256 limit;
+        
+        if (balances.length < 10) {
+            limit = balances.length;
+        } else {
+            limit = 10;
+        }
+
+        uint256 lastAmount = 999999999999999999999999;
+        for (uint256 i = 0; i < limit; i++){
+            address tempOwner;
+            uint256 tempAmount = 0;
+            for (uint256 j = 0; balances.length < limit; j++){    
+                if (balances[j] > tempAmount && balances[j] < lastAmount){
+                    tempOwner = posToWallet[j];
+                    tempAmount = balances[j];
+                }
+            }
+            lastAmount = tempAmount;
+            owners[i] = tempOwner;
+            amounts[i] = tempAmount;
+        }
+        return (owners, amounts);  
     }
+
 }
