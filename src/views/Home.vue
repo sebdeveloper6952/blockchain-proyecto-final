@@ -60,26 +60,28 @@
     <!-- Inicia cuerpo de contrato -->
     <div class="columns">
       <!-- Inicia columna izquierda vacia -->
-      <div class="column">
+      <div class="column" style="text-align:center">
+        <b-field label="Top 10 Cuentas">
+        <b-table :data="topCuentas" :columns="columnsTopCuentas" :bordered="true" :centered="true"></b-table>
+        </b-field>
       </div>
       <!-- Finaliza columna izquierda vacia -->
       <!-- Inicia columna central-->
       <div class="column" style="border-color:black">
         <div class="columns">
           <div class="column">
-            <b-dropdown
+            <!-- <b-dropdown
               v-model="accountSender"
               aria-role="list"
               @change="getAccountsBalance"
             >
-            <template #trigger="{ active }">
+            <template #trigger="{ active }"> -->
             <b-button
-              style="width:500px"
+              style="width:660px"
               label="Seleccionar una billetera de origen"
               type="is-primary"
-              :icon-right="active ? 'menu-up' : 'menu-down'"
             />
-            </template>
+            <!-- </template>
             <b-dropdown-item
               v-for="a in accounts"
               :key="a"
@@ -88,22 +90,21 @@
             >
             {{ a }}
             </b-dropdown-item>
-            </b-dropdown>
+            </b-dropdown> -->
           </div>
         </div>
-        <b-input placeholder="Billetera de origen" :value="accountSender"> </b-input>
+        <b-input placeholder="Billetera de origen" v-model="accounts[0]"> </b-input>
         <br>
         <div class="columns">
           <div class="column" >
-            <b-dropdown  v-model="accountReceiver" aria-role="list">
-              <template #trigger="{ active }">
+            <!-- <b-dropdown  v-model="accountReceiver" aria-role="list">
+              <template #trigger="{ active }"> -->
                 <b-button
-                  style="width:500px"
+                  style="width:660px"
                   label="Seleccionar una billetera de destino"
                   type="is-primary"
-                  :icon-right="active ? 'menu-up' : 'menu-down'"
                 />
-              </template>
+              <!-- </template>
               <b-dropdown-item 
                 v-for="a in accounts"
                 :key="a"
@@ -111,10 +112,10 @@
                 aria-role="listitem"
                 >{{ a }}</b-dropdown-item
               >
-            </b-dropdown>
+            </b-dropdown> -->
           </div>
         </div>
-        <b-input placeholder="Billetera de destino" :value="accountReceiver"> </b-input>
+        <b-input placeholder="Billetera de destino" v-model="accountReceiver" > </b-input>
         <b-field label="Cantidad">
           <b-numberinput
             v-model="transactionValue"
@@ -125,21 +126,25 @@
         </b-field>
         <b-field :label="`Balance: ${balance}`" />
         <b-button
-          :disabled="
-            !(
-              accountSender.length > 0 &&
-              accountReceiver.length > 0 &&
-              transactionValue > 0
-            )
-          "
           label="Enviar"
           type="is-primary"
           @click="fetchTransaction"
         />
       </div>
-      <div class="column">
+      <!-- <div class="column">
+                        <b-button
+                  style="width:300px"
+                  label="Seleccionar una billetera de destino"
+                  type="is-primary"
+                />
+        <b-table :data="historialCuentas" :columns="columnsHistorialCuentas" :bordered="true" :centered="true"></b-table>
       </div>
+    </div> -->
     </div>
+    <b-field label="Ultimas 20 Transacciones">
+        <b-table :data="historialCuentas" :columns="columnsHistorialCuentas" :bordered="true" :centered="true"></b-table>
+    </b-field>
+        <br>
   </div>
 </template>
 <style lang="scss">
@@ -174,6 +179,54 @@ export default {
       protocolVersion: 0,
       gasPrice: 0,
       connected: false,
+      topCuentas:[
+        {'name':'0xabF85c6E4900bf16474e9187733793708709450b','balance':'1'},
+        {'name':'Paul Beleches','balance':'2'},
+        {'name':'Paul Beleches','balance':'3'},
+        {'name':'Paul Beleches','balance':'4'},
+        {'name':'Paul Beleches','balance':'5'},
+        {'name':'Paul Beleches','balance':'6'},
+        {'name':'Paul Beleches','balance':'7'},
+        {'name':'Paul Beleches','balance':'8'},
+        {'name':'Paul Beleches','balance':'9'},
+        {'name':'Paul Beleches','balance':'10'}
+      ],
+      columnsTopCuentas:[
+        {
+          field:'name',
+          label:'Direccion'
+        },
+        {
+          field:'balance',
+          label:'Balance'
+        }
+      ],
+      historialCuentas:[
+        {'name1':'0xabF85c6E4900bf16474e9187733793708709450b','name2':'0xabF85c6E4900bf16474e9187733793708709450b','monto':'1'},
+        {'name1':'Paul Beleches','name2':'Sebas Arriola','monto':'2'},
+        {'name1':'Paul Beleches','name2':'Sebas Arriola','monto':'3'},
+        {'name1':'Paul Beleches','name2':'Sebas Arriola','monto':'4'},
+        {'name1':'Paul Beleches','name2':'Sebas Arriola','monto':'5'},
+        {'name1':'Paul Beleches','name2':'Sebas Arriola','monto':'6'},
+        {'name1':'Paul Beleches','name2':'Sebas Arriola','monto':'7'},
+        {'name1':'Paul Beleches','name2':'Sebas Arriola','monto':'8'},
+        {'name1':'Paul Beleches','name2':'Sebas Arriola','monto':'9'},
+        {'name1':'Paul Beleches','name2':'Sebas Arriola','monto':'10'},
+      ],
+      columnsHistorialCuentas:[
+        {
+          field:'name1',
+          label:'Direccion 1'
+        },
+        {
+          field:'name2',
+          label:'Direccion 2'
+        },
+        {
+          field:'monto',
+          label:'Monto'
+        }
+      ],
     };
   },
   async mounted() {
@@ -215,6 +268,7 @@ export default {
     async fetchAccounts() {
       this.accounts = await this.$store.state.web3.eth.getAccounts();
       this.accountsAmount = this.accounts.length;
+      this.fetchBalance(this.accounts[0])
     },
     async requestAccounts() {
       await this.$store.state.web3.eth.requestAccounts();
@@ -227,7 +281,7 @@ export default {
     },
     async fetchTransaction() {
       const response = await this.$store.state.web3.eth.sendTransaction({
-        from: this.accountSender,
+        from: this.accounts[0],
         to: this.accountReceiver,
         value: this.transactionValue,
       });
