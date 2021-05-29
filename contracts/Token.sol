@@ -51,7 +51,7 @@ contract Token {
         // initial balance of the owner
         posToWallet[0] = owner;
         walletToPos[owner] = 0;
-        balances[walletToPos[owner]] = tokenTotalSupply;
+        balances.push(tokenTotalSupply);
         isRegistered[owner] = true;
         lastId = 0;
     }
@@ -83,6 +83,7 @@ contract Token {
             posToWallet[id] = _to;
             walletToPos[_to] = id;
             isRegistered[_to] = true;
+            balances.push(0);
         }
         
         balances[walletToPos[msg.sender]] -= _value;
