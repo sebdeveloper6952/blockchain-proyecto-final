@@ -47,7 +47,7 @@ contract Token {
         tokenName = "Token";
         tokenSymbol = "TOK";
         tokenDecimals = 8;
-        tokenTotalSupply = 69 * 1000000;
+        tokenTotalSupply = 69 * 100000000;
         // initial balance of the owner
         posToWallet[0] = owner;
         walletToPos[owner] = 0;

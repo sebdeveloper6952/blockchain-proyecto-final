@@ -1,0 +1,86 @@
+
+Compiling your contracts...
+===========================
+> Compiling ./contracts/Token.sol
+> Compilation warnings encountered:
+
+    /home/sebdev69/Desktop/infura-test/contracts/Token.sol: Warning: SPDX license identifier not provided in source file. Before publishing, consider adding a comment containing "SPDX-License-Identifier: <SPDX-License>" to each source file. Use "SPDX-License-Identifier: UNLICENSED" for non-open-source code. Please see https://spdx.org for more information.
+
+> Artifacts written to /home/sebdev69/Desktop/infura-test/build/contracts
+> Compiled successfully using:
+   - solc: 0.7.0+commit.9e61f92b.Emscripten.clang
+
+
+
+Migrations dry-run (simulation)
+===============================
+> Network name:    'ropsten-fork'
+> Network id:      3
+> Block gas limit: 8007811 (0x7a3083)
+
+
+5_update.contract.js
+====================
+
+   Replacing 'Token'
+   -----------------
+   > block number:        10335367
+   > block timestamp:     1622335817
+   > account:             0xe155B89685B1117bCf4BbdF0eB5639b2e52e8727
+   > balance:             4.95487006
+   > gas used:            999706 (0xf411a)
+   > gas price:           10 gwei
+   > value sent:          0 ETH
+   > total cost:          0.00999706 ETH
+
+   -------------------------------------
+   > Total cost:          0.00999706 ETH
+
+
+Summary
+=======
+> Total deployments:   1
+> Final cost:          0.00999706 ETH
+
+
+
+
+
+Starting migrations...
+======================
+> Network name:    'ropsten'
+> Network id:      3
+> Block gas limit: 8000000 (0x7a1200)
+
+
+5_update.contract.js
+====================
+
+   Replacing 'Token'
+   -----------------
+   > transaction hash:    0x948f5d7291584b6aafdef632c7b0e6b87ebb8fda80b4f914a685459a257391c2
+   > Blocks: 2            Seconds: 8
+   > contract address:    0x2d757966e644F5C663145AC4f0717a9398Da4f72
+   > block number:        10335370
+   > block timestamp:     1622335832
+   > account:             0xe155B89685B1117bCf4BbdF0eB5639b2e52e8727
+   > balance:             4.95312206
+   > gas used:            1174506 (0x11ebea)
+   > gas price:           10 gwei
+   > value sent:          0 ETH
+   > total cost:          0.01174506 ETH
+
+
+   > Saving migration to chain.
+   > Saving artifacts
+   -------------------------------------
+   > Total cost:          0.01174506 ETH
+
+
+Summary
+=======
+> Total deployments:   1
+> Final cost:          0.01174506 ETH
+
+
+
