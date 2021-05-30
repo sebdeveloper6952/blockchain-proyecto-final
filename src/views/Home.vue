@@ -375,27 +375,18 @@ export default {
           console.log(result);
         });
     },
-    //Cheque if this should be changed
-    testTransferFrom(to, amount) {
+    testLastTransfers() {
       this.$store.state.contract.methods
-        .transferFrom(this.accounts[0], to, amount)
-        .send()
+        .lastTransfers()
+        .call()
         .then((result) => {
           console.log(result);
         });
     },
-    testApprove(spender, amount) {
+    testTopTen() {
       this.$store.state.contract.methods
-        .aprove(spender, amount)
-        .send({ from: this.accounts[0] })
-        .then((result) => {
-          console.log(result);
-        });
-    },
-    testAllowance(owner, spender) {
-      this.$store.state.contract.methods
-        .allowance(owner, spender)
-        .send()
+        .topTen()
+        .call()
         .then((result) => {
           console.log(result);
         });
