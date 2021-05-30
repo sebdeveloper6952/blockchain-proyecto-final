@@ -289,6 +289,7 @@ export default {
       this.accounts = await this.$store.state.web3.eth.getAccounts();
       this.accountsAmount = this.accounts.length;
       this.fetchBalance(this.accounts[0]);
+      this.testBalance(this.accounts[0]);
     },
     async requestAccounts() {
       await this.$store.state.web3.eth.requestAccounts();
@@ -359,12 +360,16 @@ export default {
           this.$buefy.toast.open(result);
         });
     },
-    testBalance() {
+    testBalance(address) {
       this.$store.state.contract.methods
-        .balanceOf(this.accounts[0])
+        .balanceOf(address)
         .call()
         .then((result) => {
-          this.$buefy.toast.open(`Balance: ${result}`);
+          const balance = (result / 10 ** 8).toFixed(2);
+          this.$buefy.toast.open({
+            message: `Balance de TOK: ${balance}`,
+            duration: 5000,
+          });
         });
     },
     testTransfer(to, amount) {
