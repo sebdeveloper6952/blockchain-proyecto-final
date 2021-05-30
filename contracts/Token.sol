@@ -32,7 +32,7 @@ contract Token {
 
     // modifier to check if caller has funds
     modifier hasFunds(uint256 amount) {
-        require( balances[walletToPos[msg.sender]] >= amount, "Caller has no founds");
+        require( balances[walletToPos[msg.sender]] >= amount, "Caller has no funds");
         _;
     }
     
@@ -53,7 +53,7 @@ contract Token {
         walletToPos[owner] = 0;
         balances.push(tokenTotalSupply);
         isRegistered[owner] = true;
-        lastId = 0;
+        lastId = 1;
     }
     
     function name() public view returns (string memory) {
@@ -115,10 +115,8 @@ contract Token {
             Transactions memory tempTransaction = transactions[transactions.length - 1 - i];
                 
             senders[i] = tempTransaction.sender;
-            receivers [i] = tempTransaction.sender;
+            receivers [i] = tempTransaction.receiver;
             amounts[i] = tempTransaction.tokenAmount;
-                
-                
         }
         return (senders, receivers, amounts);   
     }
@@ -140,7 +138,7 @@ contract Token {
         for (uint256 i = 0; i < limit; i++){
             address tempOwner;
             uint256 tempAmount = 0;
-            for (uint256 j = 0; balances.length < limit; j++){    
+            for (uint256 j = 0; j < balances.length; j++){    
                 if (balances[j] > tempAmount && balances[j] < lastAmount){
                     tempOwner = posToWallet[j];
                     tempAmount = balances[j];
