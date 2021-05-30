@@ -15,6 +15,3 @@ new Vue({
   store,
   render: (h) => h(App),
 }).$mount("#app");
-
-// initialize contract instantiation
-store.dispatch("initializeContract");

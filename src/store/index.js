@@ -12,11 +12,14 @@ export default new Vuex.Store({
     contractAddress: "0x2d757966e644F5C663145AC4f0717a9398Da4f72",
   },
   actions: {
-    initializeContract({ state }) {
+    initializeContract({ state }, onData) {
       state.contract = new state.web3.eth.Contract(
         Token.abi,
         state.contractAddress
       );
+      state.contract.events.Transfer().on("data", function(event) {
+        onData(event.returnValues);
+      });
     },
   },
 });

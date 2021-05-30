@@ -8,61 +8,71 @@
       right="right"
       v-model="open"
     >
-    <div class="p-1">
-      <div class="column">
-        <b-field id="nTitle" label="Propiedades de red" />
-        <div class="level-left">
-          <b-field :label="`Network Id: ${networkId}`" />
-        </div>
-        <div class="level-left">
-          <b-field :label="`Peer Count: ${peerCount}`" />
-        </div>
-        <div class="level-left">
-          <b-field :label="`Block number: ${blockNumber}`" />
-        </div>
-        <div class="level-left">
-          <b-field
-            :label="`Block Transaction count: ${blockTransactionCount}`"
-          />
-        </div>
-        <div class="level-left">
-          <b-field :label="`Accounts cont: ${accountsAmount}`" />
-        </div>
-        <div class="level-left">
-          <b-field :label="`Protocol version: ${protocolVersion}`" />
-        </div>
-        <div class="level-left">
-          <b-field :label="`Gas price: ${gasPrice}`" />
+      <div class="p-1">
+        <div class="column">
+          <b-field id="nTitle" label="Propiedades de red" />
+          <div class="level-left">
+            <b-field :label="`Network Id: ${networkId}`" />
+          </div>
+          <div class="level-left">
+            <b-field :label="`Peer Count: ${peerCount}`" />
+          </div>
+          <div class="level-left">
+            <b-field :label="`Block number: ${blockNumber}`" />
+          </div>
+          <div class="level-left">
+            <b-field
+              :label="`Block Transaction count: ${blockTransactionCount}`"
+            />
+          </div>
+          <div class="level-left">
+            <b-field :label="`Accounts cont: ${accountsAmount}`" />
+          </div>
+          <div class="level-left">
+            <b-field :label="`Protocol version: ${protocolVersion}`" />
+          </div>
+          <div class="level-left">
+            <b-field :label="`Gas price: ${gasPrice}`" />
+          </div>
         </div>
       </div>
-    </div>
     </b-sidebar>
     <!-- Finaliza sidebar con detalles de res -->
     <!-- Inicia Menu principal -->
     <b-navbar centered>
       <template #brand>
         <b-navbar-item>
-          <b-button style="width:140px" @click="connectToMeta" :disabled="connected">Conectar</b-button>
+          <b-button
+            style="width:140px"
+            @click="connectToMeta"
+            :disabled="connected"
+            >Conectar</b-button
+          >
         </b-navbar-item>
       </template>
       <template #start>
         <b-field id="nTitle" label="Bienvenido" />
       </template>
       <template #end>
-        <b-navbar-item >
-          <b-button  style="width:140px" @click="open = true">Detalles</b-button>
+        <b-navbar-item>
+          <b-button style="width:140px" @click="open = true">Detalles</b-button>
         </b-navbar-item>
       </template>
     </b-navbar>
     <!-- Finaliza Menu principal -->
-    <br>
-    <br>
+    <br />
+    <br />
     <!-- Inicia cuerpo de contrato -->
     <div class="columns">
       <!-- Inicia columna izquierda vacia -->
       <div class="column" style="text-align:center">
         <b-field label="Top 10 Cuentas">
-        <b-table :data="topCuentas" :columns="columnsTopCuentas" :bordered="true" :centered="true"></b-table>
+          <b-table
+            :data="topCuentas"
+            :columns="columnsTopCuentas"
+            :bordered="true"
+            :centered="true"
+          ></b-table>
         </b-field>
       </div>
       <!-- Finaliza columna izquierda vacia -->
@@ -93,18 +103,19 @@
             </b-dropdown> -->
           </div>
         </div>
-        <b-input placeholder="Billetera de origen" v-model="accounts[0]"> </b-input>
-        <br>
+        <b-input placeholder="Billetera de origen" v-model="accounts[0]">
+        </b-input>
+        <br />
         <div class="columns">
-          <div class="column" >
+          <div class="column">
             <!-- <b-dropdown  v-model="accountReceiver" aria-role="list">
               <template #trigger="{ active }"> -->
-                <b-button
-                  style="width:660px"
-                  label="Seleccionar una billetera de destino"
-                  type="is-primary"
-                />
-              <!-- </template>
+            <b-button
+              style="width:660px"
+              label="Seleccionar una billetera de destino"
+              type="is-primary"
+            />
+            <!-- </template>
               <b-dropdown-item 
                 v-for="a in accounts"
                 :key="a"
@@ -115,7 +126,8 @@
             </b-dropdown> -->
           </div>
         </div>
-        <b-input placeholder="Billetera de destino" v-model="accountReceiver" > </b-input>
+        <b-input placeholder="Billetera de destino" v-model="accountReceiver">
+        </b-input>
         <b-field label="Cantidad">
           <b-numberinput
             v-model="transactionValue"
@@ -125,11 +137,7 @@
           ></b-numberinput>
         </b-field>
         <b-field :label="`Balance: ${balance}`" />
-        <b-button
-          label="Enviar"
-          type="is-primary"
-          @click="fetchTransaction"
-        />
+        <b-button label="Enviar" type="is-primary" @click="fetchTransaction" />
       </div>
       <!-- <div class="column">
                         <b-button
@@ -142,18 +150,24 @@
     </div> -->
     </div>
     <b-field label="Ultimas 20 Transacciones">
-        <b-table :data="historialCuentas" :columns="columnsHistorialCuentas" :bordered="true" :centered="true"></b-table>
+      <b-table
+        :data="historialCuentas"
+        :columns="columnsHistorialCuentas"
+        :bordered="true"
+        :centered="true"
+      ></b-table>
     </b-field>
-        <br>
+    <br />
   </div>
 </template>
 <style lang="scss">
-#nTitle{
+#nTitle {
   text-align: center;
-    label {
+  label {
     font-weight: bold;
     font-size: 30px;
-    color: #42b983;}
+    color: #42b983;
+  }
 }
 </style>
 
@@ -179,57 +193,63 @@ export default {
       protocolVersion: 0,
       gasPrice: 0,
       connected: false,
-      topCuentas:[
-        {'name':'0xabF85c6E4900bf16474e9187733793708709450b','balance':'1'},
-        {'name':'Paul Beleches','balance':'2'},
-        {'name':'Paul Beleches','balance':'3'},
-        {'name':'Paul Beleches','balance':'4'},
-        {'name':'Paul Beleches','balance':'5'},
-        {'name':'Paul Beleches','balance':'6'},
-        {'name':'Paul Beleches','balance':'7'},
-        {'name':'Paul Beleches','balance':'8'},
-        {'name':'Paul Beleches','balance':'9'},
-        {'name':'Paul Beleches','balance':'10'}
+      topCuentas: [
+        { name: "0xabF85c6E4900bf16474e9187733793708709450b", balance: "1" },
+        { name: "Paul Beleches", balance: "2" },
+        { name: "Paul Beleches", balance: "3" },
+        { name: "Paul Beleches", balance: "4" },
+        { name: "Paul Beleches", balance: "5" },
+        { name: "Paul Beleches", balance: "6" },
+        { name: "Paul Beleches", balance: "7" },
+        { name: "Paul Beleches", balance: "8" },
+        { name: "Paul Beleches", balance: "9" },
+        { name: "Paul Beleches", balance: "10" },
       ],
-      columnsTopCuentas:[
+      columnsTopCuentas: [
         {
-          field:'name',
-          label:'Direccion'
+          field: "name",
+          label: "Direccion",
         },
         {
-          field:'balance',
-          label:'Balance'
-        }
+          field: "balance",
+          label: "Balance",
+        },
       ],
-      historialCuentas:[
-        {'name1':'0xabF85c6E4900bf16474e9187733793708709450b','name2':'0xabF85c6E4900bf16474e9187733793708709450b','monto':'1'},
-        {'name1':'Paul Beleches','name2':'Sebas Arriola','monto':'2'},
-        {'name1':'Paul Beleches','name2':'Sebas Arriola','monto':'3'},
-        {'name1':'Paul Beleches','name2':'Sebas Arriola','monto':'4'},
-        {'name1':'Paul Beleches','name2':'Sebas Arriola','monto':'5'},
-        {'name1':'Paul Beleches','name2':'Sebas Arriola','monto':'6'},
-        {'name1':'Paul Beleches','name2':'Sebas Arriola','monto':'7'},
-        {'name1':'Paul Beleches','name2':'Sebas Arriola','monto':'8'},
-        {'name1':'Paul Beleches','name2':'Sebas Arriola','monto':'9'},
-        {'name1':'Paul Beleches','name2':'Sebas Arriola','monto':'10'},
-      ],
-      columnsHistorialCuentas:[
+      historialCuentas: [
         {
-          field:'name1',
-          label:'Direccion 1'
+          name1: "0xabF85c6E4900bf16474e9187733793708709450b",
+          name2: "0xabF85c6E4900bf16474e9187733793708709450b",
+          monto: "1",
+        },
+        { name1: "Paul Beleches", name2: "Sebas Arriola", monto: "2" },
+        { name1: "Paul Beleches", name2: "Sebas Arriola", monto: "3" },
+        { name1: "Paul Beleches", name2: "Sebas Arriola", monto: "4" },
+        { name1: "Paul Beleches", name2: "Sebas Arriola", monto: "5" },
+        { name1: "Paul Beleches", name2: "Sebas Arriola", monto: "6" },
+        { name1: "Paul Beleches", name2: "Sebas Arriola", monto: "7" },
+        { name1: "Paul Beleches", name2: "Sebas Arriola", monto: "8" },
+        { name1: "Paul Beleches", name2: "Sebas Arriola", monto: "9" },
+        { name1: "Paul Beleches", name2: "Sebas Arriola", monto: "10" },
+      ],
+      columnsHistorialCuentas: [
+        {
+          field: "name1",
+          label: "Direccion 1",
         },
         {
-          field:'name2',
-          label:'Direccion 2'
+          field: "name2",
+          label: "Direccion 2",
         },
         {
-          field:'monto',
-          label:'Monto'
-        }
+          field: "monto",
+          label: "Monto",
+        },
       ],
     };
   },
   async mounted() {
+    // initialize contract instantiation
+    this.$store.dispatch("initializeContract", this.onTransferEvent);
     this.fetchAccounts();
     this.fetchGasPrice();
     this.fetchProtocolVersion();
@@ -268,7 +288,7 @@ export default {
     async fetchAccounts() {
       this.accounts = await this.$store.state.web3.eth.getAccounts();
       this.accountsAmount = this.accounts.length;
-      this.fetchBalance(this.accounts[0])
+      this.fetchBalance(this.accounts[0]);
     },
     async requestAccounts() {
       await this.$store.state.web3.eth.requestAccounts();
@@ -356,29 +376,43 @@ export default {
         });
     },
     //Cheque if this should be changed
-    testTransferFrom( to, amount) {
+    testTransferFrom(to, amount) {
       this.$store.state.contract.methods
-        .transferFrom( this.accounts[0], to, amount)
+        .transferFrom(this.accounts[0], to, amount)
         .send()
         .then((result) => {
           console.log(result);
         });
     },
-    testApprove( spender, amount) {
+    testApprove(spender, amount) {
       this.$store.state.contract.methods
-        .aprove( spender, amount)
+        .aprove(spender, amount)
         .send({ from: this.accounts[0] })
         .then((result) => {
           console.log(result);
         });
     },
-    testAllowance( owner, spender) {
+    testAllowance(owner, spender) {
       this.$store.state.contract.methods
-        .allowance( owner, spender)
+        .allowance(owner, spender)
         .send()
         .then((result) => {
           console.log(result);
         });
+    },
+    onTransferEvent(data) {
+      console.log(`onData: ${data[0]}`);
+      this.$buefy.toast.open({
+        duration: 5000,
+        type: "is-success",
+        message:
+          "DESDE: " +
+          data[0] +
+          " SE ENVIO " +
+          data[2] +
+          " A LA CUENTA: " +
+          data[1],
+      });
     },
   },
 };
