@@ -17,10 +17,9 @@ export default new Vuex.Store({
         Token.abi,
         state.contractAddress
       );
-      console.log(state.contract);
       data.onInit();
       state.contract.events.Transfer().on("data", function(event) {
-        data.onData(event.returnValues);
+        data.onTransfer(event.returnValues);
       });
     },
   },

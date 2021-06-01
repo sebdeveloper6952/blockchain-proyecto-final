@@ -51,7 +51,10 @@
         </b-navbar-item>
       </template>
       <template #start>
-        <b-field id="nTitle" label="Bienvenido" />
+        <b-field
+          id="nTitle"
+          :label="`Interactuando con el contrato ${contractName}`"
+        />
       </template>
       <template #end>
         <b-navbar-item>
@@ -65,7 +68,7 @@
       <div class="column" style="text-align:center">
         <b-field label="Top 10 Cuentas">
           <b-table
-            :data="topCuentas"
+            :data="topTenAccounts"
             :columns="columnsTopCuentas"
             :bordered="true"
             :centered="true"
@@ -108,13 +111,14 @@
         <b-button
           label="Enviar"
           type="is-primary"
-          @click="testTransfer(accountReceiver, transactionValue)"
+          :disabled="!accountReceiver || !transactionValue"
+          @click="testTransfer(accountReceiver, transactionValue * 10 ** 8)"
         />
       </div>
     </div>
     <b-field label="Ultimas 20 Transacciones">
       <b-table
-        :data="historialCuentas"
+        :data="transferHistory"
         :columns="columnsHistorialCuentas"
         :bordered="true"
         :centered="true"
@@ -140,6 +144,7 @@ export default {
   components: {},
   data() {
     return {
+      contractName: "",
       open: false,
       isLoading: false,
       accounts: [],
@@ -156,21 +161,11 @@ export default {
       protocolVersion: 0,
       gasPrice: 0,
       connected: false,
-      topCuentas: [
-        { name: "0xabF85c6E4900bf16474e9187733793708709450b", balance: "1" },
-        { name: "Paul Beleches", balance: "2" },
-        { name: "Paul Beleches", balance: "3" },
-        { name: "Paul Beleches", balance: "4" },
-        { name: "Paul Beleches", balance: "5" },
-        { name: "Paul Beleches", balance: "6" },
-        { name: "Paul Beleches", balance: "7" },
-        { name: "Paul Beleches", balance: "8" },
-        { name: "Paul Beleches", balance: "9" },
-        { name: "Paul Beleches", balance: "10" },
-      ],
+      topTenAccounts: [],
+      transferHistory: [],
       columnsTopCuentas: [
         {
-          field: "name",
+          field: "address",
           label: "Direccion",
         },
         {
@@ -178,33 +173,17 @@ export default {
           label: "Balance",
         },
       ],
-      historialCuentas: [
-        {
-          name1: "0xabF85c6E4900bf16474e9187733793708709450b",
-          name2: "0xabF85c6E4900bf16474e9187733793708709450b",
-          monto: "1",
-        },
-        { name1: "Paul Beleches", name2: "Sebas Arriola", monto: "2" },
-        { name1: "Paul Beleches", name2: "Sebas Arriola", monto: "3" },
-        { name1: "Paul Beleches", name2: "Sebas Arriola", monto: "4" },
-        { name1: "Paul Beleches", name2: "Sebas Arriola", monto: "5" },
-        { name1: "Paul Beleches", name2: "Sebas Arriola", monto: "6" },
-        { name1: "Paul Beleches", name2: "Sebas Arriola", monto: "7" },
-        { name1: "Paul Beleches", name2: "Sebas Arriola", monto: "8" },
-        { name1: "Paul Beleches", name2: "Sebas Arriola", monto: "9" },
-        { name1: "Paul Beleches", name2: "Sebas Arriola", monto: "10" },
-      ],
       columnsHistorialCuentas: [
         {
-          field: "name1",
-          label: "Direccion 1",
+          field: "from",
+          label: "Origen",
         },
         {
-          field: "name2",
-          label: "Direccion 2",
+          field: "to",
+          label: "Destino",
         },
         {
-          field: "monto",
+          field: "amount",
           label: "Monto",
         },
       ],
@@ -213,7 +192,7 @@ export default {
   async mounted() {
     // initialize contract instantiation
     this.$store.dispatch("initializeContract", {
-      onTranfer: this.onTransferEvent,
+      onTransfer: this.onTransferEvent,
       onInit: this.onContractInit,
     });
     this.fetchAccounts();
@@ -227,6 +206,8 @@ export default {
   methods: {
     onContractInit() {
       this.testTopTen();
+      this.testLastTransfers();
+      this.testName();
     },
     toast(message) {
       this.$buefy.toast.open({
@@ -257,7 +238,6 @@ export default {
     async fetchAccounts() {
       this.accounts = await this.$store.state.web3.eth.getAccounts();
       this.accountsAmount = this.accounts.length;
-      this.fetchBalance(this.accounts[0]);
       this.testBalance(this.accounts[0]);
     },
     async requestAccounts() {
@@ -302,7 +282,7 @@ export default {
         .name()
         .call()
         .then((result) => {
-          this.$buefy.toast.open(result);
+          this.contractName = result;
         });
     },
     testSymbol() {
@@ -334,14 +314,16 @@ export default {
         .balanceOf(address)
         .call()
         .then((result) => {
-          const balance = (result / 10 ** 8).toFixed(2);
-          this.$buefy.toast.open({
-            message: `Balance de TOK: ${balance}`,
-            duration: 5000,
-          });
+          this.balance = (result / 10 ** 8).toFixed(2);
         });
     },
     testTransfer(to, amount) {
+      this.$buefy.notification.open({
+        position: "is-top-right",
+        type: "is-success",
+        duration: 5000,
+        message: "Transacción enviada, por favor espere.",
+      });
       this.$store.state.contract.methods
         .transfer(to, amount)
         .send({ from: this.accounts[0] })
@@ -354,7 +336,18 @@ export default {
         .lastTransfers()
         .call()
         .then((result) => {
-          console.log(result);
+          if (result[0] && result[1] && result[2]) {
+            const from = result[0];
+            const to = result[1];
+            const amount = result[2];
+            for (let i = 0; i < from.length; i++) {
+              this.transferHistory.push({
+                from: from[i],
+                to: to[i],
+                amount: (amount[i] / 10 ** 8).toFixed(2),
+              });
+            }
+          }
         });
     },
     testTopTen() {
@@ -362,11 +355,19 @@ export default {
         .topTen()
         .call()
         .then((result) => {
-          console.log(result);
+          if (result[0]) {
+            const addresses = result[0];
+            const balances = result[1];
+            for (let i = 0; i < result[0].length; i++) {
+              this.topTenAccounts.push({
+                address: addresses[i],
+                balance: (balances[i] / 10 ** 8).toFixed(2),
+              });
+            }
+          }
         });
     },
     onTransferEvent(data) {
-      console.log(`onData: ${data[0]}`);
       this.$buefy.toast.open({
         duration: 5000,
         type: "is-success",
