@@ -59,12 +59,9 @@
         </b-navbar-item>
       </template>
     </b-navbar>
-    <!-- Finaliza Menu principal -->
     <br />
     <br />
-    <!-- Inicia cuerpo de contrato -->
     <div class="columns">
-      <!-- Inicia columna izquierda vacia -->
       <div class="column" style="text-align:center">
         <b-field label="Top 10 Cuentas">
           <b-table
@@ -75,32 +72,14 @@
           ></b-table>
         </b-field>
       </div>
-      <!-- Finaliza columna izquierda vacia -->
-      <!-- Inicia columna central-->
       <div class="column" style="border-color:black">
         <div class="columns">
           <div class="column">
-            <!-- <b-dropdown
-              v-model="accountSender"
-              aria-role="list"
-              @change="getAccountsBalance"
-            >
-            <template #trigger="{ active }"> -->
             <b-button
               style="width:660px"
               label="Seleccionar una billetera de origen"
               type="is-primary"
             />
-            <!-- </template>
-            <b-dropdown-item
-              v-for="a in accounts"
-              :key="a"
-              :value="a"
-              aria-role="listitem"
-            >
-            {{ a }}
-            </b-dropdown-item>
-            </b-dropdown> -->
           </div>
         </div>
         <b-input placeholder="Billetera de origen" v-model="accounts[0]">
@@ -108,22 +87,11 @@
         <br />
         <div class="columns">
           <div class="column">
-            <!-- <b-dropdown  v-model="accountReceiver" aria-role="list">
-              <template #trigger="{ active }"> -->
             <b-button
               style="width:660px"
               label="Seleccionar una billetera de destino"
               type="is-primary"
             />
-            <!-- </template>
-              <b-dropdown-item 
-                v-for="a in accounts"
-                :key="a"
-                :value="a"
-                aria-role="listitem"
-                >{{ a }}</b-dropdown-item
-              >
-            </b-dropdown> -->
           </div>
         </div>
         <b-input placeholder="Billetera de destino" v-model="accountReceiver">
@@ -137,17 +105,12 @@
           ></b-numberinput>
         </b-field>
         <b-field :label="`Balance: ${balance}`" />
-        <b-button label="Enviar" type="is-primary" @click="fetchTransaction" />
+        <b-button
+          label="Enviar"
+          type="is-primary"
+          @click="testTransfer(accountReceiver, transactionValue)"
+        />
       </div>
-      <!-- <div class="column">
-                        <b-button
-                  style="width:300px"
-                  label="Seleccionar una billetera de destino"
-                  type="is-primary"
-                />
-        <b-table :data="historialCuentas" :columns="columnsHistorialCuentas" :bordered="true" :centered="true"></b-table>
-      </div>
-    </div> -->
     </div>
     <b-field label="Ultimas 20 Transacciones">
       <b-table
@@ -249,7 +212,10 @@ export default {
   },
   async mounted() {
     // initialize contract instantiation
-    this.$store.dispatch("initializeContract", this.onTransferEvent);
+    this.$store.dispatch("initializeContract", {
+      onTranfer: this.onTransferEvent,
+      onInit: this.onContractInit,
+    });
     this.fetchAccounts();
     this.fetchGasPrice();
     this.fetchProtocolVersion();
@@ -259,6 +225,9 @@ export default {
     this.fetchPeerCount();
   },
   methods: {
+    onContractInit() {
+      this.testTopTen();
+    },
     toast(message) {
       this.$buefy.toast.open({
         duration: 5000,

@@ -9,16 +9,18 @@ export default new Vuex.Store({
   state: {
     web3: new Web3(Web3.givenProvider),
     contract: {},
-    contractAddress: "0x2d757966e644F5C663145AC4f0717a9398Da4f72",
+    contractAddress: "0x7b70da475E16e2f7781f5a1CADaA741Aef684184",
   },
   actions: {
-    initializeContract({ state }, onData) {
+    initializeContract({ state }, data) {
       state.contract = new state.web3.eth.Contract(
         Token.abi,
         state.contractAddress
       );
+      console.log(state.contract);
+      data.onInit();
       state.contract.events.Transfer().on("data", function(event) {
-        onData(event.returnValues);
+        data.onData(event.returnValues);
       });
     },
   },
