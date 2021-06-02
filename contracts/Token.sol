@@ -69,10 +69,11 @@ contract Token {
     }
     
     function totalSupply() public view returns (uint256) {
-        return tokenTotalSupply;   
+        return tokenTotalSupply;
     }
 
     function balanceOf(address _owner) public view returns (uint256 balance) {
+        if (!isRegistered[_owner]) return 0;
         return balances[walletToPos[_owner]];
     }
     

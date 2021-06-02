@@ -9,7 +9,7 @@ export default new Vuex.Store({
   state: {
     web3: new Web3(Web3.givenProvider),
     contract: {},
-    contractAddress: "0x7b70da475E16e2f7781f5a1CADaA741Aef684184",
+    contractAddress: "0xDDE31A74AabCc7F656c3f6447aaCf21BedE2A8e0",
   },
   actions: {
     initializeContract({ state }, data) {
