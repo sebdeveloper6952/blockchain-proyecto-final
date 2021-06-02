@@ -80,7 +80,7 @@
           <div class="column">
             <b-button
               style="width:660px"
-              label="Seleccionar una billetera de origen"
+              label="Billetera de origen"
               type="is-primary"
             />
           </div>
@@ -92,7 +92,7 @@
           <div class="column">
             <b-button
               style="width:660px"
-              label="Seleccionar una billetera de destino"
+              label="Billetera de destino"
               type="is-primary"
             />
           </div>
@@ -116,7 +116,7 @@
         />
       </div>
     </div>
-    <b-field label="Ultimas 20 Transacciones">
+    <b-field label="Ultimas 10 Transacciones">
       <b-table
         :data="transferHistory"
         :columns="columnsHistorialCuentas"
@@ -332,6 +332,7 @@ export default {
         });
     },
     testLastTransfers() {
+      this.transferHistory=[]
       this.$store.state.contract.methods
         .lastTransfers()
         .call()
@@ -351,6 +352,7 @@ export default {
         });
     },
     testTopTen() {
+      this.topTenAccounts=[]
       this.$store.state.contract.methods
         .topTen()
         .call()
@@ -368,6 +370,9 @@ export default {
         });
     },
     onTransferEvent(data) {
+      this.testTopTen();
+      this.testBalance(this.accounts[0]);
+      this.testLastTransfers();
       this.$buefy.toast.open({
         duration: 5000,
         type: "is-success",
